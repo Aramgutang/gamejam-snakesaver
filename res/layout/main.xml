@@ -4,7 +4,9 @@
     android:layout_height="fill_parent"
     android:orientation="horizontal"
     >
-
-    
-
+	<com.aramgutang.games.snakesaver.SnakesaverView
+	    android:id="@+id/snakesaver"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent" />
+	
 </FrameLayout>
