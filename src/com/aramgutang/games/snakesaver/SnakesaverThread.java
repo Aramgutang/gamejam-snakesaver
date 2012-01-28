@@ -24,7 +24,7 @@ public class SnakesaverThread extends Thread {
 	
 	private Snake snake = new Snake();
 	private Girder master_girder = new Girder();
-	private LinkedList<Segment> girders = new LinkedList<Segment>();
+	private ConcurrentLinkedQueue<Segment> girders = new ConcurrentLinkedQueue<Segment>();
 	private LinkedList<FadingTrail> fading_trails = new LinkedList<FadingTrail>();
 	public FingerTrail touch_trail = new FingerTrail();
 	
@@ -83,10 +83,8 @@ public class SnakesaverThread extends Thread {
     }
     
     public void make_girder() {
-    	PointF last_point = null;
-    	for(PointF point : this.touch_trail.trail)
-    		last_point = point;
-    	this.girders.add(new Segment(this.touch_trail.trail.peek(), last_point));
+    	if(this.touch_trail.is_straight())
+	    	this.girders.add(new Segment(this.touch_trail.trail.peek(), this.touch_trail.last_point));
     	this.fading_trails.add(new FadingTrail(this.touch_trail.trail));
     }
     
