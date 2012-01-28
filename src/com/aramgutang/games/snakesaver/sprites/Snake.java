@@ -10,33 +10,40 @@ import com.aramgutang.games.snakesaver.utils.Segment;
 
 
 public class Snake extends Path {
+	private static float INITIAL_SPEED = 5f;
+	
 	private Paint paint = new Paint();
 	
 	private Segment[] segments = new Segment[1];
-	private int len = 10;
+	private int len = 100;
 	
 	public Snake() {
 		this.paint.setColor(Color.rgb(245, 245, 47));
 		this.paint.setStyle(Paint.Style.STROKE);
 		this.paint.setStrokeCap(Paint.Cap.ROUND);
-		this.paint.setStrokeWidth(10.0f);
+		this.paint.setStrokeWidth(10f);
 		
-		this.segments[0] = new Segment(new PointF(0,0), new PointF(1f,1f));
+		this.segments[0] = new Segment(new PointF(1f,1f), new PointF(INITIAL_SPEED,INITIAL_SPEED));
 	}
 	
 	public void draw(Canvas canvas) {
+		this.reset();
 		this.moveTo(this.segments[0].end.x, this.segments[0].end.y);
 		for(Segment segment : this.segments) {
-			this.quadTo(segment.start.x, segment.start.y, segment.control.x, segment.control.y);
+			this.lineTo(segment.start.x, segment.start.y);
+//			this.quadTo(segment.start.x, segment.start.y, segment.control.x, segment.control.y);
 		}
 		canvas.drawPath(this, this.paint);
-		this.advance();
 	}
 	
-	public void advance() {
-		int segment_count = Math.min(this.segments.length, this.len);
+	public Segment next_segment() {
+		return this.segments[0].next();
+	}
+	
+	public void push_segment(Segment segment) {
+		int segment_count = Math.min(this.segments.length + 1, this.len);
 		Segment[] new_segments = new Segment[segment_count];
-		new_segments[0] = this.segments[0].next();
+		new_segments[0] = segment;
 		for(int i=1; i < segment_count; i++)
 			new_segments[i] = this.segments[i-1];
 		this.segments = new_segments;
