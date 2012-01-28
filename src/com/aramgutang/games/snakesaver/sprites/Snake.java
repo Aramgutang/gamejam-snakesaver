@@ -4,26 +4,41 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
+import android.graphics.PointF;
+
+import com.aramgutang.games.snakesaver.utils.Segment;
+
 
 public class Snake extends Path {
 	private Paint paint = new Paint();
 	
-	private Point[] segments = {new Point(0, 0), new Point(500, 500)};
-	private int length = (int)Math.round(Math.sqrt(Math.pow(50.0, 2.0) * 2.0));
+	private Segment[] segments = new Segment[1];
+	private int len = 10;
 	
 	public Snake() {
 		this.paint.setColor(Color.rgb(245, 245, 47));
 		this.paint.setStyle(Paint.Style.STROKE);
 		this.paint.setStrokeCap(Paint.Cap.ROUND);
 		this.paint.setStrokeWidth(10.0f);
+		
+		this.segments[0] = new Segment(new PointF(0,0), new PointF(1f,1f));
 	}
 	
 	public void draw(Canvas canvas) {
-		this.moveTo(this.segments[0].x, this.segments[0].y);
-		for(Point point : this.segments) {
-			this.lineTo(point.x, point.y);
+		this.moveTo(this.segments[0].end.x, this.segments[0].end.y);
+		for(Segment segment : this.segments) {
+			this.quadTo(segment.start.x, segment.start.y, segment.control.x, segment.control.y);
 		}
 		canvas.drawPath(this, this.paint);
+		this.advance();
+	}
+	
+	public void advance() {
+		int segment_count = Math.min(this.segments.length, this.len);
+		Segment[] new_segments = new Segment[segment_count];
+		new_segments[0] = this.segments[0].next();
+		for(int i=1; i < segment_count; i++)
+			new_segments[i] = this.segments[i-1];
+		this.segments = new_segments;
 	}
 }
