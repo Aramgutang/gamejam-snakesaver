@@ -1,6 +1,7 @@
 package com.aramgutang.games.snakesaver;
 
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -8,6 +9,8 @@ import android.graphics.PointF;
 import android.os.Handler;
 import android.view.SurfaceHolder;
 
+import com.aramgutang.games.snakesaver.sprites.FadingTrail;
+import com.aramgutang.games.snakesaver.sprites.FingerTrail;
 import com.aramgutang.games.snakesaver.sprites.Girder;
 import com.aramgutang.games.snakesaver.sprites.Snake;
 import com.aramgutang.games.snakesaver.utils.Segment;
@@ -22,7 +25,8 @@ public class SnakesaverThread extends Thread {
 	private Snake snake = new Snake();
 	private Girder master_girder = new Girder();
 	private LinkedList<Segment> girders = new LinkedList<Segment>();
-	public LinkedList<PointF> touch_trail = new LinkedList<PointF>();
+	private LinkedList<FadingTrail> fading_trails = new LinkedList<FadingTrail>();
+	public FingerTrail touch_trail = new FingerTrail();
 	
 	public SnakesaverThread(SurfaceHolder surface_holder, Context context, Handler handler) {
 		this.surface_holder = surface_holder;
@@ -79,11 +83,15 @@ public class SnakesaverThread extends Thread {
     }
     
     public void make_girder() {
-    	this.girders.add(new Segment(this.touch_trail.getFirst(), this.touch_trail.getLast()));
+    	PointF last_point = null;
+    	for(PointF point : this.touch_trail.trail)
+    		last_point = point;
+    	this.girders.add(new Segment(this.touch_trail.trail.peek(), last_point));
+    	this.fading_trails.add(new FadingTrail(this.touch_trail.trail));
     }
     
     public void clear_trail() {
-    	this.touch_trail.clear();
+    	this.touch_trail.trail.clear();
     }
     
     private void draw(Canvas canvas) {
@@ -92,5 +100,12 @@ public class SnakesaverThread extends Thread {
     	for(Segment girder : this.girders)
     		if(girder.visible)
     			this.master_girder.draw(girder, canvas);
+    	this.touch_trail.draw(canvas);
+    	for(FadingTrail trail : this.fading_trails) {
+    		if(trail.faded())
+    			this.fading_trails.remove(trail);
+    		else
+    			trail.draw(canvas);
+    	}
     }
 }

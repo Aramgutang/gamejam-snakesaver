@@ -11,7 +11,7 @@ public class Girder extends Path {
 	private Paint paint = new Paint();
 	
 	public Girder() {
-		this.paint.setColor(Color.rgb(224, 72, 27));
+		this.paint.setColor(Color.rgb(8, 200, 8));
 		this.paint.setStyle(Paint.Style.STROKE);
 		this.paint.setStrokeCap(Paint.Cap.ROUND);
 		this.paint.setStrokeWidth(25f);

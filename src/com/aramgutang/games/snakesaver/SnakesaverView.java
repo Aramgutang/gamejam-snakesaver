@@ -36,12 +36,12 @@ public class SnakesaverView extends SurfaceView implements SurfaceHolder.Callbac
 		int pointer_index;
 	    switch (event.getAction() & MotionEvent.ACTION_MASK) {
 	    case MotionEvent.ACTION_DOWN:
-	        this.thread.touch_trail.addLast(new PointF(event.getX(), event.getY()));
+	        this.thread.touch_trail.add(new PointF(event.getX(), event.getY()));
 	        this.active_pointer_id = event.getPointerId(0);
 	        break;
 	    case MotionEvent.ACTION_MOVE:
 	        pointer_index = event.findPointerIndex(this.active_pointer_id);
-	        this.thread.touch_trail.addLast(new PointF(event.getX(pointer_index), event.getY(pointer_index)));
+	        this.thread.touch_trail.add(new PointF(event.getX(pointer_index), event.getY(pointer_index)));
 	        break;
 	    case MotionEvent.ACTION_UP:
 	        this.thread.make_girder();
