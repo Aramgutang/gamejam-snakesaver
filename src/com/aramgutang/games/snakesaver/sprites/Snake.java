@@ -10,7 +10,7 @@ import com.aramgutang.games.snakesaver.utils.Segment;
 
 
 public class Snake extends Path {
-	private static float INITIAL_SPEED = 5f;
+	private static float INITIAL_SPEED = 6f;
 	
 	private Paint paint = new Paint();
 	
@@ -21,7 +21,7 @@ public class Snake extends Path {
 		this.paint.setColor(Color.rgb(245, 245, 47));
 		this.paint.setStyle(Paint.Style.STROKE);
 		this.paint.setStrokeCap(Paint.Cap.ROUND);
-		this.paint.setStrokeWidth(10f);
+		this.paint.setStrokeWidth(20f);
 		
 		this.segments[0] = new Segment(new PointF(1f,1f), new PointF(INITIAL_SPEED,INITIAL_SPEED));
 	}

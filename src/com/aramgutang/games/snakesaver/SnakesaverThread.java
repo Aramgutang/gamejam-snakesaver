@@ -31,10 +31,12 @@ public class SnakesaverThread extends Thread {
             Canvas canvas = null;
             try {
                 canvas = this.surface_holder.lockCanvas(null);
-                if(this.girders == null)
-                	this.initialise_girders(canvas);
-                this.update_state();
-                this.draw(canvas);
+                synchronized(this.surface_holder) {                	
+                	if(this.girders == null)
+                		this.initialise_girders(canvas);
+                	this.update_state();
+                	this.draw(canvas);
+                }
             } finally {
                 if (canvas != null)
                     this.surface_holder.unlockCanvasAndPost(canvas);
@@ -60,7 +62,7 @@ public class SnakesaverThread extends Thread {
     	float intersection_time = -1f;
     	for(Segment girder : this.girders) {
     		intersection_time = next_segment.intersects(girder);
-    		if(intersection_time > 0 && (intersector == null || intersection_time < nearest_intersection)) {
+    		if(intersection_time >= 0 && (intersector == null || intersection_time < nearest_intersection)) {
     			intersector = girder;
     			nearest_intersection = intersection_time;
     		}

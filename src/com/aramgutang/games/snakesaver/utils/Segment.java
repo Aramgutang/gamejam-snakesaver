@@ -36,8 +36,8 @@ public 	class Segment {
 	}
 
 	public void bounce(Segment intersector, float time) {
-		this.end.x = this.start.x + time * this.vector.x;
-		this.end.y = this.start.y + time * this.vector.y;
+		this.end.x = this.start.x + time * 0.99f * this.vector.x;
+		this.end.y = this.start.y + time * 0.99f * this.vector.y;
 		float normalx = intersector.vector.y;
 		float normaly = -intersector.vector.x;
 		float multiplier = -2 * ((this.vector.x * normalx + this.vector.y * normaly) / (normalx * normalx + normaly * normaly));
