@@ -66,7 +66,7 @@ public class SnakesaverThread extends Thread {
     		}
     	}
     	if(intersector != null)
-    		next_segment.bounce(intersector, intersection_time);
+    		next_segment.bounce(intersector, nearest_intersection);
     	this.snake.push_segment(next_segment);
     	
     }
