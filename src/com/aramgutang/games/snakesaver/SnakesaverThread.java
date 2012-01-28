@@ -1,11 +1,14 @@
 package com.aramgutang.games.snakesaver;
 
+import java.util.LinkedList;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.os.Handler;
 import android.view.SurfaceHolder;
 
+import com.aramgutang.games.snakesaver.sprites.Girder;
 import com.aramgutang.games.snakesaver.sprites.Snake;
 import com.aramgutang.games.snakesaver.utils.Segment;
 
@@ -17,7 +20,9 @@ public class SnakesaverThread extends Thread {
 	public Handler handler;
 	
 	private Snake snake = new Snake();
-	private Segment[] girders = null;
+	private Girder master_girder = new Girder();
+	private LinkedList<Segment> girders = new LinkedList<Segment>();
+	public LinkedList<PointF> touch_trail = new LinkedList<PointF>();
 	
 	public SnakesaverThread(SurfaceHolder surface_holder, Context context, Handler handler) {
 		this.surface_holder = surface_holder;
@@ -32,7 +37,7 @@ public class SnakesaverThread extends Thread {
             try {
                 canvas = this.surface_holder.lockCanvas(null);
                 synchronized(this.surface_holder) {                	
-                	if(this.girders == null)
+                	if(this.girders.size() == 0)
                 		this.initialise_girders(canvas);
                 	this.update_state();
                 	this.draw(canvas);
@@ -48,11 +53,12 @@ public class SnakesaverThread extends Thread {
 		// Initialise screen edges
 		int screen_height = canvas.getHeight();
 		int screen_width = canvas.getWidth();
-		this.girders = new Segment[4];
-		this.girders[0] = new Segment(new PointF(0,0), new PointF(screen_width, 0));
-		this.girders[1] = new Segment(new PointF(0,0), new PointF(0, screen_height));
-		this.girders[2] = new Segment(new PointF(screen_width, 0), new PointF(screen_width, screen_height));
-		this.girders[3] = new Segment(new PointF(0, screen_height), new PointF(screen_width, screen_height));
+		this.girders.add(new Segment(new PointF(0,0), new PointF(screen_width, 0)));
+		this.girders.add(new Segment(new PointF(0,0), new PointF(0, screen_height)));
+		this.girders.add(new Segment(new PointF(screen_width, 0), new PointF(screen_width, screen_height)));
+		this.girders.add(new Segment(new PointF(0, screen_height), new PointF(screen_width, screen_height)));
+		for(Segment girder : this.girders)
+			girder.visible = false;
 	}
     
     private void update_state() {
@@ -70,11 +76,21 @@ public class SnakesaverThread extends Thread {
     	if(intersector != null)
     		next_segment.bounce(intersector, nearest_intersection);
     	this.snake.push_segment(next_segment);
-    	
+    }
+    
+    public void make_girder() {
+    	this.girders.add(new Segment(this.touch_trail.getFirst(), this.touch_trail.getLast()));
+    }
+    
+    public void clear_trail() {
+    	this.touch_trail.clear();
     }
     
     private void draw(Canvas canvas) {
     	canvas.drawRGB(76, 202, 237);
     	this.snake.draw(canvas);
+    	for(Segment girder : this.girders)
+    		if(girder.visible)
+    			this.master_girder.draw(girder, canvas);
     }
 }

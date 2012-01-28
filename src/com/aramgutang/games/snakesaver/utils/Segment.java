@@ -7,6 +7,7 @@ public 	class Segment {
 	public PointF end;
 	public PointF control;
 	public PointF vector;
+	public Boolean visible = true;
 	
 	public Segment(PointF start, PointF end) {
 		this.start = start;
@@ -36,11 +37,22 @@ public 	class Segment {
 	}
 
 	public void bounce(Segment intersector, float time) {
+		// See: http://stackoverflow.com/questions/573084/how-to-calculate-bounce-angle
 		this.end.x = this.start.x + time * 0.99f * this.vector.x;
 		this.end.y = this.start.y + time * 0.99f * this.vector.y;
 		float normalx = intersector.vector.y;
-		float normaly = -intersector.vector.x;
-		float multiplier = -2 * ((this.vector.x * normalx + this.vector.y * normaly) / (normalx * normalx + normaly * normaly));
+		float normaly = intersector.vector.x;
+		// Pick the right one out of the two possible normals
+		if((Math.abs(this.end.x + normalx - this.start.x)
+				+ Math.abs(this.end.y - normaly - this.start.y)) 
+				<= (Math.abs(this.end.x - normalx - this.start.x) 
+				+ Math.abs(this.end.y + normaly - this.start.y)))
+			normaly *= -1f;
+		else
+			normalx *= -1f;
+		float multiplier = -2 *
+			((this.vector.x * normalx + this.vector.y * normaly) 
+			/ (normalx * normalx + normaly * normaly));
 		this.vector.x = this.vector.x + multiplier * normalx;
 		this.vector.y = this.vector.y + multiplier * normaly;
 	}

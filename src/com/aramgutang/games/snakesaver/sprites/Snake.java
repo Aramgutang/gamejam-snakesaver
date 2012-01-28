@@ -15,13 +15,14 @@ public class Snake extends Path {
 	private Paint paint = new Paint();
 	
 	private Segment[] segments = new Segment[1];
-	private int len = 100;
+	private int len = 80;
 	
 	public Snake() {
 		this.paint.setColor(Color.rgb(245, 245, 47));
 		this.paint.setStyle(Paint.Style.STROKE);
 		this.paint.setStrokeCap(Paint.Cap.ROUND);
 		this.paint.setStrokeWidth(20f);
+		this.paint.setStrokeJoin(Paint.Join.ROUND);
 		
 		this.segments[0] = new Segment(new PointF(1f,1f), new PointF(INITIAL_SPEED,INITIAL_SPEED));
 	}
@@ -30,8 +31,7 @@ public class Snake extends Path {
 		this.reset();
 		this.moveTo(this.segments[0].end.x, this.segments[0].end.y);
 		for(Segment segment : this.segments) {
-			this.lineTo(segment.start.x, segment.start.y);
-//			this.quadTo(segment.start.x, segment.start.y, segment.control.x, segment.control.y);
+			this.quadTo(segment.start.x, segment.start.y, segment.control.x, segment.control.y);
 		}
 		canvas.drawPath(this, this.paint);
 	}
