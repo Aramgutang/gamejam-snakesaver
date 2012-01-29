@@ -1,5 +1,7 @@
 package com.aramgutang.games.snakesaver.utils;
 
+import com.aramgutang.games.snakesaver.sprites.CurvedGirder;
+
 import android.graphics.PointF;
 
 public 	class Segment {
@@ -8,6 +10,7 @@ public 	class Segment {
 	public PointF control;
 	public PointF vector;
 	public Boolean visible = true;
+	public CurvedGirder curve = null;
 
 	public Segment(PointF start, PointF end) {
 		this.start = start;
@@ -17,7 +20,11 @@ public 	class Segment {
 	}
 
 	public Segment(PointF start, PointF middle, PointF end) {
-		// TODO: Curve segments
+		this.start = start;
+		this.control = new PointF(0.5f*start.x + 0.5f*end.x - 2f*middle.x, 0.5f*start.y + 0.5f*end.y - 2f*middle.y);
+		this.end = end;
+		//this.vector = new PointF(this.end.x - this.control.x, this.end.y - this.control.y);
+		this.vector = new PointF(end.x - start.x, end.y - start.y);
 	}
 
 	public Segment next() {

@@ -9,6 +9,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 
+import com.aramgutang.games.snakesaver.utils.Segment;
+
 public class FingerTrail extends Path {
 	private Paint paint = new Paint();
 	public ConcurrentLinkedQueue<PointF> trail = new ConcurrentLinkedQueue<PointF>();
@@ -69,5 +71,46 @@ public class FingerTrail extends Path {
 		}
 		return standard_deviation(x_vectors, sumx) <= STRAIGHT_THRESHOLD
 				&& standard_deviation(y_vectors, sumy) <= STRAIGHT_THRESHOLD;
+	}
+	
+	public LinkedList<Segment> make_girders() {
+		LinkedList<Segment> girders = new LinkedList<Segment>();
+		LinkedList<PointF> points = new LinkedList<PointF>();
+		float lastx = this.trail.peek().x;
+		float lasty = this.trail.peek().y;
+		for(PointF point : this.trail){
+			if(Math.abs(point.x - lastx) + Math.abs(point.y - lasty) > 7f) {
+				points.add(point);
+				lastx = point.x;
+				lasty = point.y;
+			}
+		}
+		// If trail is not divisible by three, remove some points
+		if(girders.size() % 3 == 1)
+			girders.remove(girders.size() / 2);
+		else if(girders.size() % 3 == 2){
+			girders.remove(girders.size() /3 );
+			girders.remove(girders.size() - girders.size() / 3);
+		}
+		PointF start = null, middle = null, end = null;
+		for(int i=0; i < points.size(); i++) {
+			if(i % 2 == 0 && i == 0)
+				start = points.get(i);
+			else if(i % 2 == 0) {
+				end = points.get(i);
+				girders.add(new Segment(start, middle, end));
+				start = end;
+			}
+			if(i % 2 == 1)
+				middle = points.get(i);
+		}
+		CurvedGirder curve = new CurvedGirder(girders);
+		for(Segment girder : girders)
+			girder.curve = curve;
+		return girders;
+
+//		if(girders.size() == 0) {
+//			// TODO
+//		}
 	}
 }
