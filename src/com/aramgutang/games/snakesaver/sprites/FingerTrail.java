@@ -15,7 +15,7 @@ public class FingerTrail extends Path {
 	private Paint paint = new Paint();
 	public ConcurrentLinkedQueue<PointF> trail = new ConcurrentLinkedQueue<PointF>();
 	public PointF last_point = null;
-	static public float STRAIGHT_THRESHOLD = 0.25f;
+	static public float STRAIGHT_THRESHOLD = 0.22f;
 
 	public FingerTrail() {
 		this.paint.setColor(Color.rgb(110, 232, 9));
