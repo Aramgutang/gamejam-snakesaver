@@ -9,14 +9,14 @@ import com.aramgutang.games.snakesaver.utils.Segment;
 
 public class Girder extends Path {
 	private Paint paint = new Paint();
-	
+
 	public Girder() {
 		this.paint.setColor(Color.rgb(8, 200, 8));
 		this.paint.setStyle(Paint.Style.STROKE);
 		this.paint.setStrokeCap(Paint.Cap.ROUND);
 		this.paint.setStrokeWidth(25f);
 	}
-	
+
 	public void draw(Segment segment, Canvas canvas) {
 		this.reset();
 		this.moveTo(segment.end.x, segment.end.y);

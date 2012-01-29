@@ -10,7 +10,7 @@ import android.graphics.PointF;
 
 public class FadingTrail extends Path {
 	private Paint paint = new Paint();
-	
+
 	public FadingTrail(Queue<PointF> trail) {
 		this.paint.setColor(Color.rgb(110, 232, 9));
 		this.paint.setStyle(Paint.Style.STROKE);
@@ -23,11 +23,11 @@ public class FadingTrail extends Path {
 		for(PointF point : trail)
 			this.lineTo(point.x, point.y);
 	}
-	
+
 	public Boolean faded() {
 		return this.paint.getAlpha() <= 0;
 	}
-	
+
 	public void draw(Canvas canvas) {
 		this.paint.setAlpha(Math.max(this.paint.getAlpha()-20, 0));
 		canvas.drawPath(this, this.paint);

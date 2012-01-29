@@ -14,7 +14,7 @@ public class FingerTrail extends Path {
 	public ConcurrentLinkedQueue<PointF> trail = new ConcurrentLinkedQueue<PointF>();
 	public PointF last_point = null;
 	static public float STRAIGHT_THRESHOLD = 0.25f;
-	
+
 	public FingerTrail() {
 		this.paint.setColor(Color.rgb(110, 232, 9));
 		this.paint.setStyle(Paint.Style.STROKE);
@@ -22,12 +22,12 @@ public class FingerTrail extends Path {
 		this.paint.setStrokeWidth(50f);
 		this.paint.setStrokeJoin(Paint.Join.ROUND);
 	}
-	
+
 	public void add(PointF point) {
 		this.trail.add(point);
 		this.last_point = point;
 	}
-	
+
 	public void draw(Canvas canvas) {
 		if(this.trail.size() > 0) {
 			this.reset();
@@ -37,7 +37,7 @@ public class FingerTrail extends Path {
 			canvas.drawPath(this, this.paint);
 		}
 	}
-	
+
 	static float standard_deviation(LinkedList<Float> list, float sum) {
 		float diffsum = 0;
 		float mean = sum / list.size();
@@ -45,7 +45,7 @@ public class FingerTrail extends Path {
 			diffsum += Math.pow(item - mean, 2f);
 		return (float) Math.sqrt(1f/(list.size()-1) * diffsum);
 	}
-	
+
 	public Boolean is_straight() {
 		LinkedList<Float> x_vectors = new LinkedList<Float>();
 		LinkedList<Float> y_vectors = new LinkedList<Float>();
