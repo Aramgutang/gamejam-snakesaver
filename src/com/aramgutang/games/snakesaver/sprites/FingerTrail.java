@@ -8,13 +8,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
-import android.util.Log;
 
 public class FingerTrail extends Path {
 	private Paint paint = new Paint();
 	public ConcurrentLinkedQueue<PointF> trail = new ConcurrentLinkedQueue<PointF>();
 	public PointF last_point = null;
-	static public float STRAIGHT_THRESHOLD = 100f;
+	static public float STRAIGHT_THRESHOLD = 0.25f;
 	
 	public FingerTrail() {
 		this.paint.setColor(Color.rgb(110, 232, 9));
@@ -39,29 +38,36 @@ public class FingerTrail extends Path {
 		}
 	}
 	
+	static float standard_deviation(LinkedList<Float> list, float sum) {
+		float diffsum = 0;
+		float mean = sum / list.size();
+		for(float item : list)
+			diffsum += Math.pow(item - mean, 2f);
+		return (float) Math.sqrt(1f/(list.size()-1) * diffsum);
+	}
+	
 	public Boolean is_straight() {
+		LinkedList<Float> x_vectors = new LinkedList<Float>();
+		LinkedList<Float> y_vectors = new LinkedList<Float>();
 		float lastx = this.trail.peek().x;
 		float lasty = this.trail.peek().y;
-		float maxx = 0, maxy = 0, minx = 0, miny = 0, diffx, diffy;
-		Boolean first = true;
+		float diffx, diffy, length, sumx = 0, sumy = 0;
 		for(PointF point : this.trail) {
 			diffx = point.x - lastx;
 			diffy = point.y - lasty;
 			if(Math.abs(diffx) + Math.abs(diffy) > 20f) {
 				lastx = point.x;
 				lasty = point.y;
-				if(first) {
-					maxx = maxy = diffx;
-					maxy = miny = diffy;
-					first = false;
-				} else {
-					maxx = Math.max(diffx, maxx);
-					maxy = Math.max(diffy, maxy);
-					minx = Math.min(diffx, minx);
-					miny = Math.min(diffy, miny);
-				}
+				length = (float) Math.sqrt(Math.pow(diffx, 2f) + Math.pow(diffy, 2f));
+				diffx /= length;
+				diffy /= length;
+				x_vectors.add(diffx);
+				y_vectors.add(diffy);
+				sumx += diffx;
+				sumy += diffy;
 			}
 		}
-		return maxx - minx + maxy - miny <= STRAIGHT_THRESHOLD;
+		return standard_deviation(x_vectors, sumx) <= STRAIGHT_THRESHOLD
+				&& standard_deviation(y_vectors, sumy) <= STRAIGHT_THRESHOLD;
 	}
 }
